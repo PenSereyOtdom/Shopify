@@ -1,7 +1,16 @@
+{% comment %}
+    Renders a list of products from a collection
+
+    Accepts:
+    - collection: {Object} Collection Liquid object (required)
+
+    Usage:
+    {% include 'collection-grid-item', collection: collection %}
+{% endcomment %}
 {% if collection.image %}
   {%- assign collection_image = collection.image -%}
-{% elsif collection.products.first and collection.products.first.images != empty %}
-  {%- assign collection_image = collection.products.first.featured_image -%}
+{% elsif collection.products.first and collection.products.first.media != empty %}
+  {%- assign collection_image = collection.products.first.featured_media.preview_image -%}
 {% else %}
   {% assign collection_image = blank %}
 {% endif %}
@@ -9,10 +18,11 @@
 <div class="collection-grid-item">
   <a href="{% if collection.products == empty %}#{% else %}{{ collection.url }}{% endif %}" class="collection-grid-item__link">
     {% unless collection_image == blank %}
-      <div class="collection-grid-item__overlay lazyload"
+      <div class="collection-grid-item__overlay box ratio-container lazyload js"
         data-bgset="{% include 'bgset', image: collection_image %}"
         data-sizes="auto"
-        data-parent-fit="cover">
+        data-parent-fit="cover"
+        data-image-loading-animation>
       </div>
       <noscript>
         <div class="collection-grid-item__overlay" style="background-image: url('{{ collection_image | img_url: '1024x1024' }}')"></div>
@@ -24,17 +34,18 @@
           {{ 'collection-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
         </div>
       {% else %}
-         <div class="collection-grid-item__overlay" style="background-image: url('{{ collection_image | img_url: '1024x1024' }}')"></div>
+        <div class="collection-grid-item__overlay" style="background-image: url('{{ collection_image | img_url: '1024x1024' }}')"></div>
       {% endif %}
     {% endunless %}
+
     <div class="collection-grid-item__title-wrapper">
-      <h3 class="h2 collection-grid-item__title">
+      <div class="collection-grid-item__title h3">
         {% if collection.title == blank %}
           {{ 'homepage.onboarding.collection_title' | t }}
         {% else %}
           {{ collection.title }}
         {% endif %}
-      </h3>
+      </div>
     </div>
   </a>
 </div>
